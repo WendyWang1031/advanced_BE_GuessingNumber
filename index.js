@@ -2,12 +2,14 @@
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const gameHistoryRouter = require("./routes/gameHistoryRouter"); // 注意路徑
 
 const app = express();
-const PORT = 3000;
+const PORT = 9999;
 
 app.use(express.json());
+app.use(cors());
 
 //測試端點
 app.get("/test", (req, res) => {
