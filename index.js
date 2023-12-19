@@ -9,6 +9,17 @@ const PORT = 3000;
 
 app.use(express.json());
 
+//測試端點
+app.get("/test", (req, res) => {
+  res.send({ msg: "you are amazing!" });
+});
+
+// 猜數字遊戲 API 端點
+app.get("/answer", (req, res) => {
+  const answer = Math.floor(Math.random() * 99) + 1; // 產生1~99的隨機數字
+  res.send({ answer: [answer] });
+});
+
 // 連接到 MongoDB 數據庫
 mongoose.connect(
   "mongodb+srv://WendyWang:LsZ01pZl1gSn8tz6@firsttry.qa1lzhq.mongodb.net/FirstTry?retryWrites=true&w=majority"
