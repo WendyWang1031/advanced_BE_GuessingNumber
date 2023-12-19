@@ -1,47 +1,33 @@
 // index.js
 
 const express = require("express");
-const path = require("path");
+const mongoose = require("mongoose");
+const gameHistoryRouter = require("./routes/gameHistoryRouter"); // 注意路徑
+
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-// 生成範圍在 1 到 100 之間的隨機數字
-function generateRandomNumber() {
-  return Math.floor(Math.random() * 100) + 1;
-}
+// 連接到 MongoDB 數據庫
+mongoose.connect(
+  "mongodb+srv://WendyWang:LsZ01pZl1gSn8tz6@firsttry.qa1lzhq.mongodb.net/FirstTry?retryWrites=true&w=majority"
+);
 
-// 存放猜數字遊戲答案的變數
-let answer;
-
-app.get("/answer", (req, res) => {
-  // 每次呼叫 /answer 時，更新答案
-  answer = generateRandomNumber();
-  res.send({ answer: answer });
+mongoose.connection.on("connected", () => {
+  console.log("Connected to MongoDB");
 });
 
-app.get("/test", (req, res) => {
-  res.send({ msg: "you are amazing!" });
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB connection error:", err);
 });
 
-app.get("*", (req, res) => {
-  res.status(404).json({ error: "Page did not exist" });
+mongoose.connection.on("disconnected", () => {
+  console.log("Disconnected from MongoDB");
 });
 
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  if (status === 500) {
-    console.log("The server errored when processing a request");
-    console.log(err);
-  }
-
-  res.status(status);
-  res.send({
-    status: status,
-    message: err.message,
-  });
-});
+// 使用遊玩歷史的路由
+app.use("/api", gameHistoryRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
